@@ -15,6 +15,8 @@ import java.text.DecimalFormat;
 import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.data.DataProvider;
 import com.vaadin.demo.dashboard.data.Generator;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -42,7 +44,11 @@ import com.vaadin.ui.Window;
 
 public class DashboardView extends VerticalLayout implements View {
 
-    Table t;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4071854876711456470L;
+	Table t;
 
     public DashboardView() {
         setSizeFull();
@@ -60,114 +66,133 @@ public class DashboardView extends VerticalLayout implements View {
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
 
-        Button notify = new Button("2");
-        notify.setDescription("Notifications (2 unread)");
-        // notify.addStyleName("borderless");
-        notify.addStyleName("notifications");
-        notify.addStyleName("unread");
-        notify.addStyleName("icon-only");
-        notify.addStyleName("icon-bell");
-        notify.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                ((DashboardUI) getUI()).clearDashboardButtonBadge();
-                event.getButton().removeStyleName("unread");
-                event.getButton().setDescription("Notifications");
+//        Button notify = new Button("2");
+//        notify.setDescription("Notifications (2 unread)");
+//        // notify.addStyleName("borderless");
+//        notify.addStyleName("notifications");
+//        notify.addStyleName("unread");
+//        notify.addStyleName("icon-only");
+//        notify.addStyleName("icon-bell");
+//        notify.addClickListener(new ClickListener() {
+//            /**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = -3250568494372269492L;
+//
+//			@Override
+//            public void buttonClick(ClickEvent event) {
+//                ((DashboardUI) getUI()).clearDashboardButtonBadge();
+//                event.getButton().removeStyleName("unread");
+//                event.getButton().setDescription("Notifications");
+//
+//                if (notifications != null && notifications.getUI() != null)
+//                    notifications.close();
+//                else {
+//                    buildNotifications(event);
+//                    getUI().addWindow(notifications);
+//                    notifications.focus();
+//                    ((CssLayout) getUI().getContent())
+//                            .addLayoutClickListener(new LayoutClickListener() {
+//                                /**
+//								 * 
+//								 */
+//								private static final long serialVersionUID = -6067867129998245551L;
+//
+//								@Override
+//                                public void layoutClick(LayoutClickEvent event) {
+//                                    notifications.close();
+//                                    ((CssLayout) getUI().getContent())
+//                                            .removeLayoutClickListener(this);
+//                                }
+//                            });
+//                }
+//
+//            }
+//        });
+//        top.addComponent(notify);
+//        top.setComponentAlignment(notify, Alignment.MIDDLE_LEFT);
 
-                if (notifications != null && notifications.getUI() != null)
-                    notifications.close();
-                else {
-                    buildNotifications(event);
-                    getUI().addWindow(notifications);
-                    notifications.focus();
-                    ((CssLayout) getUI().getContent())
-                            .addLayoutClickListener(new LayoutClickListener() {
-                                @Override
-                                public void layoutClick(LayoutClickEvent event) {
-                                    notifications.close();
-                                    ((CssLayout) getUI().getContent())
-                                            .removeLayoutClickListener(this);
-                                }
-                            });
-                }
-
-            }
-        });
-        top.addComponent(notify);
-        top.setComponentAlignment(notify, Alignment.MIDDLE_LEFT);
-
-        Button edit = new Button();
-        edit.addStyleName("icon-edit");
-        edit.addStyleName("icon-only");
-        top.addComponent(edit);
-        edit.setDescription("Edit Dashboard");
-        edit.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                final Window w = new Window("Edit Dashboard");
-
-                w.setModal(true);
-                w.setClosable(false);
-                w.setResizable(false);
-                w.addStyleName("edit-dashboard");
-
-                getUI().addWindow(w);
-
-                w.setContent(new VerticalLayout() {
-                    TextField name = new TextField("Dashboard Name");
-                    {
-                        addComponent(new FormLayout() {
-                            {
-                                setSizeUndefined();
-                                setMargin(true);
-                                name.setValue(title.getValue());
-                                addComponent(name);
-                                name.focus();
-                                name.selectAll();
-                            }
-                        });
-
-                        addComponent(new HorizontalLayout() {
-                            {
-                                setMargin(true);
-                                setSpacing(true);
-                                addStyleName("footer");
-                                setWidth("100%");
-
-                                Button cancel = new Button("Cancel");
-                                cancel.addClickListener(new ClickListener() {
-                                    @Override
-                                    public void buttonClick(ClickEvent event) {
-                                        w.close();
-                                    }
-                                });
-                                cancel.setClickShortcut(KeyCode.ESCAPE, null);
-                                addComponent(cancel);
-                                setExpandRatio(cancel, 1);
-                                setComponentAlignment(cancel,
-                                        Alignment.TOP_RIGHT);
-
-                                Button ok = new Button("Save");
-                                ok.addStyleName("wide");
-                                ok.addStyleName("default");
-                                ok.addClickListener(new ClickListener() {
-                                    @Override
-                                    public void buttonClick(ClickEvent event) {
-                                        title.setValue(name.getValue());
-                                        w.close();
-                                    }
-                                });
-                                ok.setClickShortcut(KeyCode.ENTER, null);
-                                addComponent(ok);
-                            }
-                        });
-
-                    }
-                });
-
-            }
-        });
-        top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
+//        Button edit = new Button();
+//        edit.addStyleName("icon-edit");
+//        edit.addStyleName("icon-only");
+//        top.addComponent(edit);
+//        edit.setDescription("Edit Dashboard");
+//        edit.addClickListener(new ClickListener() {
+//           /**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 6213644941001760982L;
+//
+//			@Override
+//            public void buttonClick(ClickEvent event) {
+//                final Window w = new Window("Edit Dashboard");
+//
+//                w.setModal(true);
+//                w.setClosable(false);
+//                w.setResizable(false);
+//                w.addStyleName("edit-dashboard");
+//
+//                getUI().addWindow(w);
+//
+//                w.setContent(new VerticalLayout() {
+//                    /**
+//					 * 
+//					 */
+//					private static final long serialVersionUID = -4664796188884801858L;
+//					TextField name = new TextField("Dashboard Name");
+//                    {
+//                        addComponent(new FormLayout() {
+//                            {
+//                                setSizeUndefined();
+//                                setMargin(true);
+//                                name.setValue(title.getValue());
+//                                addComponent(name);
+//                                name.focus();
+//                                name.selectAll();
+//                            }
+//                        });
+//
+//                        addComponent(new HorizontalLayout() {
+//                            {
+//                                setMargin(true);
+//                                setSpacing(true);
+//                                addStyleName("footer");
+//                                setWidth("100%");
+//
+//                                Button cancel = new Button("Cancel");
+//                                cancel.addClickListener(new ClickListener() {
+//                                    @Override
+//                                    public void buttonClick(ClickEvent event) {
+//                                        w.close();
+//                                    }
+//                                });
+//                                cancel.setClickShortcut(KeyCode.ESCAPE, null);
+//                                addComponent(cancel);
+//                                setExpandRatio(cancel, 1);
+//                                setComponentAlignment(cancel,
+//                                        Alignment.TOP_RIGHT);
+//
+//                                Button ok = new Button("Save");
+//                                ok.addStyleName("wide");
+//                                ok.addStyleName("default");
+//                                ok.addClickListener(new ClickListener() {
+//                                    @Override
+//                                    public void buttonClick(ClickEvent event) {
+//                                        title.setValue(name.getValue());
+//                                        w.close();
+//                                    }
+//                                });
+//                                ok.setClickShortcut(KeyCode.ENTER, null);
+//                                addComponent(ok);
+//                            }
+//                        });
+//
+//                    }
+//                });
+//
+//            }
+//        });
+//        top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
 
         HorizontalLayout row = new HorizontalLayout();
         row.setSizeFull();
@@ -178,9 +203,20 @@ public class DashboardView extends VerticalLayout implements View {
 
         row.addComponent(createPanel(new TopGrossingMoviesChart()));
 
-        TextArea notes = new TextArea("Notes");
+        final TextArea notes = new TextArea("Notes");
         notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
         notes.setSizeFull();
+        notes.addTextChangeListener(new TextChangeListener(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -2397288439605377624L;
+			@Override
+			public void textChange(TextChangeEvent event) {
+				notes.setValue(event.getText());
+			}
+        	
+        });
         CssLayout panel = createPanel(notes);
         panel.addStyleName("notes");
         row.addComponent(panel);
@@ -193,7 +229,12 @@ public class DashboardView extends VerticalLayout implements View {
         setExpandRatio(row, 2);
 
         t = new Table() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -8273273624374661640L;
+
+			@Override
             protected String formatPropertyValue(Object rowId, Object colId,
                     Property<?> property) {
                 if (colId.equals("Revenue")) {
@@ -237,7 +278,12 @@ public class DashboardView extends VerticalLayout implements View {
         configure.setDescription("Configure");
         configure.addStyleName("small");
         configure.addClickListener(new ClickListener() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 8136630148056854773L;
+
+			@Override
             public void buttonClick(ClickEvent event) {
                 Notification.show("Not implemented in this demo");
             }

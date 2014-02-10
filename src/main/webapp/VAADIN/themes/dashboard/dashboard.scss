@@ -26,6 +26,7 @@
 @import "views/sales.scss";
 @import "views/reports.scss";
 @import "views/transactions.scss";
+@import "views/project.scss";
 
 
 @mixin dashboard {
@@ -48,6 +49,7 @@
 	@include dashboard-sales-view;
 	@include dashboard-reports-view;
 	@include dashboard-transactions-view;
+	@include dashboard-project-view;
 
 
 	.v-view {

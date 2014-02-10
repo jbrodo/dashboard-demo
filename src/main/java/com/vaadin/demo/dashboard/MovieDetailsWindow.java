@@ -154,7 +154,6 @@ public class MovieDetailsWindow extends Window {
         if (!expand) {
             synopsisText = synopsisText.length() > 300 ? synopsisText
                     .substring(0, 300) + "…" : synopsisText;
-
         }
         synopsis.setValue(synopsisText);
     }

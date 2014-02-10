@@ -97,6 +97,43 @@
 			<artifactId>vaadin-charts</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<!-- essere tools -->
+		<dependency>
+			<groupId>it.unimib.disco.essere.serial</groupId>
+			<artifactId>index</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>it.unimib.disco.essere</groupId>
+			<artifactId>crawler</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>it.unimib.disco.essere</groupId>
+			<artifactId>jdt</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>it.unimib.disco.essere</groupId>
+			<artifactId>repofinderanalysistools</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- lucene tools -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>4.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>4.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>4.6.0</version>
+		</dependency>
 		<!-- <dependency> -->
 		<!-- <groupId>org.vaadin.artur.widgetsetoptimizer</groupId> -->
 		<!-- <artifactId>widgetsetoptimizer</artifactId> -->
