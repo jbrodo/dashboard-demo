@@ -25,6 +25,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.demo.dashboard.data.DataProvider;
 import com.vaadin.demo.dashboard.data.ProjectContainer;
 import com.vaadin.demo.dashboard.data.TransactionsContainer;
+import com.vaadin.demo.dashboard.pbthread.AnalysisThread;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -40,6 +41,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.ColumnGenerator;
@@ -110,8 +112,8 @@ public class ProjectView extends VerticalLayout implements View {
 		//updatePriceFooter();
 
 		// Allow dragging items to the reports menu
-		//t.setDragMode(TableDragMode.MULTIROW);
-		//t.setMultiSelect(true);
+		t.setDragMode(TableDragMode.MULTIROW);
+		t.setMultiSelect(true);
 
 		HorizontalLayout toolbar = new HorizontalLayout();
 		toolbar.setWidth("100%");
@@ -136,60 +138,10 @@ public class ProjectView extends VerticalLayout implements View {
 			@Override
 			public void textChange(final TextChangeEvent event) {
 				String query = event.getText();
-				if(query.equals("")){
-					data=((DashboardUI) getUI()).dataProvider.getProjects();
-					data.removeAllContainerFilters();
-					t.setContainerDataSource(data);
-					sortTable();
-				}else {
-					data=((DashboardUI) getUI()).dataProvider.getProjectsByQuery(query);
-					data.removeAllContainerFilters();
-					t.setContainerDataSource(data);
-					sortTable();
-				}
-//				data.removeAllContainerFilters();
-//				data.addContainerFilter(new Filter() {
-//					/**
-//					 * 
-//					 */
-//					 private static final long serialVersionUID = 8700585444515510706L;
-//
-//					 @Override
-//					 public boolean passesFilter(Object itemId, Item item)
-//							 throws UnsupportedOperationException {
-//						 if (event.getText() == null
-//								 || event.getText().equals("")) {
-//							 return true;
-//						 }
-//						 return filterByProperty("Score", item,
-//								 event.getText())
-//										 || filterByProperty("Name Project", item,
-//												 event.getText());
-//					 }
-//
-//					 @Override
-//					 public boolean appliesToProperty(Object propertyId) {
-//						 if (propertyId.equals("Name Project")
-//								 || propertyId.equals("Description"))
-//							 return true;
-//						 return false;
-//					 }
-//				});
+				doQuery(query);
 			}
 		});
-		// final ComboBox filter = new ComboBox();
-		// filter.setNewItemsAllowed(true);
-		// filter.setNewItemHandler(new NewItemHandler() {
-		// @Override
-		// public void addNewItem(String newItemCaption) {
-		// filter.addItem(newItemCaption);
-		// }
-		// });
-		// filter.addItem("test");
-		// filter.addItem("finland");
-		// filter.addItem("paranorman");
-
-		// filter.addStyleName("small");
+		
 		filter.setInputPrompt("Filter");
 		filter.addShortcutListener(new ShortcutListener("Clear",
 				KeyCode.ESCAPE, null) {
@@ -201,46 +153,51 @@ public class ProjectView extends VerticalLayout implements View {
 			@Override
 			public void handleAction(Object sender, Object target) {
 				filter.setValue("");
+				data=((DashboardUI) getUI()).dataProvider.getProjects();
 				data.removeAllContainerFilters();
+				t.setContainerDataSource(data);
+				sortTable();
 			}
 		});
 		toolbar.addComponent(filter);
 		toolbar.setExpandRatio(filter, 1);
 		toolbar.setComponentAlignment(filter, Alignment.MIDDLE_LEFT);
 
-		// Button refresh = new Button("Refresh");
-		// refresh.addClickListener(new ClickListener() {
-		// @Override
-		// public void buttonClick(ClickEvent event) {
-		// updatePriceFooter();
-		// try {
-		// Thread.sleep(3000);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		// });
-		// refresh.addStyleName("small");
-		// toolbar.addComponent(refresh);
-
-//		final Button newReport = new Button("Create Report From Selection");
-//		newReport.addClickListener(new ClickListener() {
-//			/**
-//			 * 
-//			 */
-//			private static final long serialVersionUID = -6479091296826030739L;
-//
-//			@Override
-//			public void buttonClick(ClickEvent event) {
-//				createNewReportFromSelection();
-//			}
-//		});
-//		newReport.setEnabled(false);
-//		newReport.addStyleName("small");
-//		toolbar.addComponent(newReport);
-//		toolbar.setComponentAlignment(newReport, Alignment.MIDDLE_LEFT);
-
+		Label index = new Label("Index db");
+		index.addStyleName("h2");
+		index.setSizeUndefined();
+		toolbar.addComponent(index);
+		toolbar.setComponentAlignment(index, Alignment.MIDDLE_RIGHT);
+		
+		final ProgressBar indicator = new ProgressBar(new Float(0.0));
+		indicator.setVisible(false);
+		indicator.setEnabled(false);
+		indicator.setSizeFull();
+		final Button indexbutton = new Button("Start indexing");
+		indexbutton.addClickListener(new ClickListener(){
+			private static final long serialVersionUID = -6479091296826030739L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+					Notification.show("Not implemented in this demo");
+					final AnalysisThread t = new AnalysisThread(indicator, indexbutton);
+					t.start();
+					Notification.show("Partito");
+					UI.getCurrent().setPollInterval(500);
+					indicator.setEnabled(true);
+					indicator.setVisible(true);
+					indexbutton.setEnabled(false);
+			}
+		});
+		toolbar.addComponent(indexbutton);
+		toolbar.setComponentAlignment(indexbutton, Alignment.MIDDLE_RIGHT);
+//		toolbar.addComponent(indicator);
+//		toolbar.setComponentAlignment(indicator,Alignment.MIDDLE_LEFT);
+		VerticalLayout vl = new VerticalLayout();
+//		vl.addComponent(indexbutton);
+//		vl.setComponentAlignment(indexbutton, Alignment.MIDDLE_RIGHT);
+		vl.addComponent(indicator);
+		vl.setComponentAlignment(indicator,Alignment.MIDDLE_RIGHT);
+		addComponent(vl);
 		addComponent(t);
 		setExpandRatio(t, 1);
 
@@ -252,9 +209,7 @@ public class ProjectView extends VerticalLayout implements View {
 			private static final long serialVersionUID = 2447521588313216080L;
 
 			private Action report = new Action("Create Report");
-
 			private Action discard = new Action("Discard");
-
 			private Action details = new Action("Project Dectails");
 
 			@Override
@@ -268,7 +223,7 @@ public class ProjectView extends VerticalLayout implements View {
 					if (item != null) {
 						Window w = new ProjectWindow(DataProvider
 								.getProjectByName(item.getItemProperty("Name Project")
-										.getValue().toString()));
+										.getValue().toString()),ProjectView.this);
 						UI.getCurrent().addWindow(w);
 						w.focus();
 					}
@@ -280,98 +235,31 @@ public class ProjectView extends VerticalLayout implements View {
 				return new Action[] { details, report, discard };
 			}
 		});
-
-//		t.addValueChangeListener(new ValueChangeListener() {
-//			/**
-//			 * 
-//			 */
-//			private static final long serialVersionUID = 5454514523711571984L;
-//
-//			@Override
-//			public void valueChange(ValueChangeEvent event) {
-//				if (t.getValue() instanceof Set) {
-//					Set<Object> val = (Set<Object>) t.getValue();
-//					newReport.setEnabled(val.size() > 0);
-//				} else {
-//				}
-//			}
-//		});
-//		t.setImmediate(true);
-
-		// group rows by month
-		// t.setRowGenerator(new RowGenerator() {
-		// @Override
-		// public GeneratedRow generateRow(Table table, Object itemId) {
-		// if (itemId.toString().startsWith("month")) {
-		// Date date = (Date) table.getItem(itemId)
-		// .getItemProperty("timestamp").getValue();
-		// SimpleDateFormat df = new SimpleDateFormat();
-		// df.applyPattern("MMMM yyyy");
-		// GeneratedRow row = new GeneratedRow(df.format(date));
-		// row.setSpanColumns(true);
-		// return row;
-		// }
-		// return null;
-		// }
-		// });
-
-//		t.addGeneratedColumn("Title", new ColumnGenerator() {
-//			/**
-//			 * 
-//			 */
-//			private static final long serialVersionUID = -3150661983979200336L;
-//
-//			@Override
-//			public Object generateCell(Table source, Object itemId,
-//					Object columnId) {
-//				final String title = source.getItem(itemId)
-//						.getItemProperty(columnId).getValue().toString();
-//				Button titleLink = new Button(title);
-//				titleLink.addStyleName("link");
-//				titleLink.addClickListener(new ClickListener() {
-//					/**
-//					 * 
-//					 */
-//					private static final long serialVersionUID = -8357807911961099703L;
-//
-//					@Override
-//					public void buttonClick(ClickEvent event) {
-//						Window w = new MovieDetailsWindow(DataProvider
-//								.getMovieForTitle(title), null);
-//						UI.getCurrent().addWindow(w);
-//					}
-//				});
-//				return title;
-//			}
-//		});
 	}
 
+	public void doQuery(String query){
+		if(query.equals("")){
+			data=((DashboardUI) getUI()).dataProvider.getProjects();
+			data.removeAllContainerFilters();
+			t.setContainerDataSource(data);
+			sortTable();
+		}else {
+			data=((DashboardUI) getUI()).dataProvider.getProjectsByQuery(query);
+			data.removeAllContainerFilters();
+			t.setContainerDataSource(data);
+			sortTable();
+		}
+	}
+	
 	private void sortTable() {
-		t.sort(new Object[] { "score" }, new boolean[] { false });
-	}
-
-	private boolean filterByProperty(String prop, Item item, String text) {
-		if (item == null || item.getItemProperty(prop) == null
-				|| item.getItemProperty(prop).getValue() == null)
-			return false;
-		String val = item.getItemProperty(prop).getValue().toString().trim()
-				.toLowerCase();
-		if (val.startsWith(text.toLowerCase().trim()))
-			return true;
-		// String[] parts = text.split(" ");
-		// for (String part : parts) {
-		// if (val.contains(part.toLowerCase()))
-		// return true;
-		//
-		// }
-		return false;
+		t.sort(new Object[] {"score"}, new boolean[] { false });
 	}
 
 	void createNewReportFromSelection() {
 		((DashboardUI) getUI()).openReports(t);
 	}
 
-	void updatePriceFooter() {
+	private void updatePriceFooter() {
 //		String ret = new DecimalFormat("#.##").format(DataProvider
 //				.getTotalSum());
 		String ret = "";

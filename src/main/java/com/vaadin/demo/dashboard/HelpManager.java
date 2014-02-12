@@ -10,6 +10,7 @@
 
 package com.vaadin.demo.dashboard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,12 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 
-public class HelpManager {
-
-    private UI ui;
+public class HelpManager implements Serializable{
+    /**
+	 * SerialId
+	 */
+	private static final long serialVersionUID = 8686077215478334188L;
+	private UI ui;
     private List<HelpOverlay> overlays = new ArrayList<HelpOverlay>();
 
     public HelpManager(UI ui) {

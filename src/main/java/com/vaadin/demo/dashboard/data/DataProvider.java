@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -49,8 +50,12 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.util.CurrentInstance;
 
-public class DataProvider {
+public class DataProvider implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4408864981761274870L;
 	public static Random rand = new Random();
 	public static String _directory = "/home/riccardo/Scaricati/eclipse vaadin/eclipse/index";
 	/**
