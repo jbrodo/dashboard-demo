@@ -103,7 +103,6 @@ public class ProjectView extends VerticalLayout implements View {
 
 		t.setColumnAlignment("Score", Align.RIGHT);
 		//t.setColumnAlignment("Price", Align.RIGHT);
-		t.setColumnWidth("Description", 360);
 		t.setVisibleColumns(new Object[] { "Score", "Name Project", "Description"});
 		
 
