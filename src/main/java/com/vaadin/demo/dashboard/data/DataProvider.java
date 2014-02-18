@@ -57,7 +57,7 @@ public class DataProvider implements Serializable{
 	 */
 	private static final long serialVersionUID = -4408864981761274870L;
 	public static Random rand = new Random();
-	public static String _directory = "/home/riccardo/Scaricati/eclipse vaadin/eclipse/index";
+	public static String _directory = "/home/r.roveda/workspace/tesi/repoFinderUI/index-searchengine/index";
 	/**
 	 * Initialize the data for this application.
 	 */

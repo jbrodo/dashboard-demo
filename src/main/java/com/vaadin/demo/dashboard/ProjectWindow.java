@@ -84,7 +84,7 @@ public class ProjectWindow extends Window {
 		fields.addComponent(notes);
 
 		final ComboBox checkout = new ComboBox("Select checkout");
-		
+		checkout.setSizeFull();
 		Multimap<String, String> g =r.getRepositories();
 		for(String s :g.keySet()){
 			for(String co:g.get(s)){
@@ -127,12 +127,12 @@ public class ProjectWindow extends Window {
 		});
 		fields.addComponent(checkout);
 		
-	
+		int columns = 3;
 		
 		Label tag = new Label("");
 		tag.setCaption("Tags");
 		
-		double rg = (double)r.getTags().size()/4;
+		double rg = (double)r.getTags().size()/columns;
 		int righeint = (int)rg;
 		if(rg>0&&(rg-(double)righeint)>0){
 			righeint++;
@@ -142,12 +142,19 @@ public class ProjectWindow extends Window {
 			}
 		}
 		System.out.println(righeint);
-		GridLayout gl = new GridLayout(4,righeint);
+		
+		GridLayout gl = new GridLayout(columns,righeint);
 		gl.setCaption("Tag");
 		Iterator<String> tags = r.getTags().iterator();
 		for(int righe = 0; tags.hasNext();righe++){
-			for(int colonne = 0; colonne<4&&tags.hasNext();colonne++){
-				Button b = new Button(tags.next());
+			for(int colonne = 0; colonne<columns&&tags.hasNext();colonne++){
+				String caption = tags.next();
+				String captiondot = caption;
+				if(caption.length()>11){
+					captiondot=caption.substring(0, 10)+"...";
+				}
+				Button b = new Button(captiondot);
+				b.setDescription(caption);
 				b.addStyleName("small");
 				gl.addComponent(b, colonne, righe);
 				b.addClickListener(new ClickListener() {
@@ -177,7 +184,7 @@ public class ProjectWindow extends Window {
 		
 		HorizontalLayout footer = new HorizontalLayout();
 		footer.addStyleName("footer");
-		footer.setWidth("100%");
+		footer.setSizeFull();//Width("100%");
 		footer.setMargin(true);
 
 		Button close = new Button("Close");
