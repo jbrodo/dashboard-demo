@@ -36,7 +36,7 @@ public class ProjectWindow extends Window {
 	private static final long serialVersionUID = 5229945610717075518L;
 	Label synopsis = new Label();
 
-	public ProjectWindow(Repository r, final ProjectView p) {
+	public ProjectWindow(final Repository r, final ProjectView p) {
 		VerticalLayout l = new VerticalLayout();
 		l.setSpacing(true);
 		//l.setHeight(null);
@@ -72,17 +72,18 @@ public class ProjectWindow extends Window {
 		label.setCaption("Name");
 		fields.addComponent(label);
 
-		Panel panel = new Panel();
-		panel.setCaption("Description");
-		panel.setHeight(null);
+//		Panel panel = new Panel();
+//		panel.setCaption("Description");
+//		panel.setHeight(null);
 		final TextArea notes = new TextArea("Description");
 		notes.setValue(r.descrizione);
-		notes.setHeight(null);
+//		notes.setHeight(null);
 		notes.setSizeFull();
-		panel.setContent(notes);
+		
+//		panel.setContent(notes);
 
 		fields.addComponent(notes);
-
+		notes.setReadOnly(true);
 		final ComboBox checkout = new ComboBox("Select checkout");
 		checkout.setSizeFull();
 		Multimap<String, String> g =r.getRepositories();
@@ -114,6 +115,9 @@ public class ProjectWindow extends Window {
 				String s =(String)checkout.getConvertedValue();
 				if(s!=null){
 					//Notification.show("Not implemented in this demo, selezionato:\n"+s);
+					Window w = new AnalysisWindow(r,s);
+					UI.getCurrent().addWindow(w);
+					w.focus();
 					final AnalysisThread t = new AnalysisThread(indicator, analyse);
 					t.start();
 					UI.getCurrent().setPollInterval(500);
@@ -181,6 +185,22 @@ public class ProjectWindow extends Window {
 		
 		fields.addComponent(analyse);
 		fields.addComponent(indicator);
+		
+//		Button b = new Button("new tree window");
+//		b.addClickListener(new ClickListener(){
+//
+//			/**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 2762251282091197862L;
+//
+//			@Override
+//			public void buttonClick(ClickEvent event) {
+//				Window w = new AnalysisWindow(r,"");
+//			}
+//			
+//		});
+//		fields.addComponent(b);
 		
 		HorizontalLayout footer = new HorizontalLayout();
 		footer.addStyleName("footer");

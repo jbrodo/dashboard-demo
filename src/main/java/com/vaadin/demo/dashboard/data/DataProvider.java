@@ -10,6 +10,11 @@
 
 package com.vaadin.demo.dashboard.data;
 
+import it.unimib.disco.essere.analysis.download.GitDownloadRepository;
+import it.unimib.disco.essere.analysis.download.RepositoryUrlNotWellFormed;
+import it.unimib.disco.essere.analysis.download.SVNDownloadRepository;
+import it.unimib.disco.essere.analyzer.build.maven.util.MavenPathRetrieve;
+import it.unimib.disco.essere.crawler.type.RepositoryProtocol;
 import it.unimib.disco.essere.serial.readindex.RepositoryReadIndex;
 import it.unimib.disco.essere.serial.searching.Repository;
 import it.unimib.disco.essere.serial.searching.RepositoryDTO;
@@ -27,6 +32,8 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +48,7 @@ import java.util.Random;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -57,7 +65,8 @@ public class DataProvider implements Serializable{
 	 */
 	private static final long serialVersionUID = -4408864981761274870L;
 	public static Random rand = new Random();
-	public static String _directory = "/home/r.roveda/workspace/tesi/repoFinderUI/index-searchengine/index";
+	public static Path _directory = Paths.get(File.separator,"home","r.roveda","workspace","tesi","repoFinderUI","index-searchengine","index");
+	public static Path _directoryDownload = Paths.get(File.separator,"home","r.roveda","sandboxdowload");
 	/**
 	 * Initialize the data for this application.
 	 */
@@ -67,14 +76,14 @@ public class DataProvider implements Serializable{
 		loadProjectData();
 		generateTransactionsData();
 	}
-	
+
 	private ProjectContainer p ;
 	private static List<Repository> projects = new ArrayList<Repository>();
 	public void loadProjectData() {
-		RepositoryReadIndex i = new RepositoryReadIndex(_directory);
+		RepositoryReadIndex i = new RepositoryReadIndex(_directory.toString());
 		p=getProjectsFromDocument(i);
 	}
-	
+
 	public ProjectContainer getProjectsFromDocument(RepositoryReadIndex i){
 		p = new ProjectContainer();
 		for(Document d:i._l){
@@ -104,9 +113,9 @@ public class DataProvider implements Serializable{
 		IndexingConstants.LINK,
 		IndexingConstants.NOME,
 		IndexingConstants.TAG};
-	
+
 	public ProjectContainer getProjectsByQuery(String query){
-		SearchEngine se = new SearchEngine(_directory);
+		SearchEngine se = new SearchEngine(_directory.toString());
 		p=new ProjectContainer();
 		projects=new ArrayList<Repository>();
 		try {
@@ -122,7 +131,7 @@ public class DataProvider implements Serializable{
 		}
 		return p;
 	}
-	
+
 	public static Repository getProjectByName(String name) {
 		for (Repository r : projects) {
 			if (r.nome.equals(name))
@@ -130,6 +139,51 @@ public class DataProvider implements Serializable{
 		}
 		return null;
 	}
+
+	static MavenPathRetrieve _m = null;
+	public static MavenPathRetrieve getMavenPathRetrieve(){
+		return _m;
+	}
+	public static boolean doDownload(Repository r, String checkout){
+		Multimap<String, String> l =r.getRepositories();
+		String tipo = "";
+		for(String k:l.keySet()){
+			if(l.get(k).contains(checkout)){
+				tipo=k;
+			}
+		}
+		if(!tipo.equals("")){
+			if(tipo.equals(RepositoryProtocol.GIT)||
+					tipo.equals(RepositoryProtocol.GIT_HTML)){
+				try {
+					GitDownloadRepository g =new GitDownloadRepository(_directoryDownload.toString(),checkout);
+					g.downloadRepository();
+					_m=new MavenPathRetrieve(_directoryDownload.toFile());
+					return true;
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (RepositoryUrlNotWellFormed e) {
+					e.printStackTrace();
+				}
+			}
+			if(tipo.equals(RepositoryProtocol.SVN)||
+					tipo.equals(RepositoryProtocol.SVN_HTML)||
+					tipo.equals(RepositoryProtocol.SVN_HTML_CO)){
+				try {
+					SVNDownloadRepository s =new SVNDownloadRepository(_directoryDownload.toString(),checkout);
+					s.downloadRepository();
+					_m=new MavenPathRetrieve(_directoryDownload.toFile());
+					return true;
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (RepositoryUrlNotWellFormed e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * =========================================================================
 	 * Movies in theaters
