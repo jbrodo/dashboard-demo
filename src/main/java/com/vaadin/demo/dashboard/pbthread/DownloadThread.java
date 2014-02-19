@@ -52,11 +52,6 @@ public class DownloadThread extends Thread {
 				_indicator.setValue(new Float(current));
 			}
 		});
-
-		// Show the "all done" for a while
-		try {
-			sleep(2000); // Sleep for 2 seconds
-		} catch (InterruptedException e) {}
 		
 		if(esitopositivo){
 			for(ArtifactValidator p:m._artifactHierarchy.keySet()){
@@ -66,20 +61,16 @@ public class DownloadThread extends Thread {
 					if(a!=null){
 						String f = a._model.toString();
 						_tree.addItem(f);
+						_tree.setParent(f, s);
 					}
 
 				}
 			}
-			for(ArtifactValidator p:m._artifactHierarchy.keySet()){
-				String s = p._model.toString();
-				for(ArtifactValidator a:m._artifactHierarchy.get(p)){
-					if(a!=null){
-						String f = a._model.toString();
-						_tree.setParent(f, s);
-					}
-				}
+			if(m._artifactHierarchy.keySet().size()==0){
+				_tree.setCaption("There are no poms");
 			}
-			
+		}else{
+			_tree.setCaption("Download Impossible");
 		}
 		// Update the UI thread-safely
 		UI.getCurrent().access(new Runnable() {

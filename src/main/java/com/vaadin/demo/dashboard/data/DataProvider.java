@@ -171,14 +171,17 @@ public class DataProvider implements Serializable{
 					tipo.equals(RepositoryProtocol.SVN_HTML_CO)){
 				try {
 					SVNDownloadRepository s =new SVNDownloadRepository(_directoryDownload.toString(),checkout);
-					s.downloadRepository();
-					_m=new MavenPathRetrieve(_directoryDownload.toFile());
-					return true;
+					if(s.downloadRepository()){
+						_m=new MavenPathRetrieve(_directoryDownload.toFile());
+						return true;
+					}else{
+						return false;
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (RepositoryUrlNotWellFormed e) {
 					e.printStackTrace();
-				}
+				} 
 			}
 		}
 		return false;
