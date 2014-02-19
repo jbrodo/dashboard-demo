@@ -4,27 +4,18 @@ package com.vaadin.demo.dashboard;
 
 import it.unimib.disco.essere.serial.searching.Repository;
 
-import java.util.Iterator;
-
-import com.google.common.collect.Multimap;
-import com.vaadin.demo.dashboard.pbthread.AnalysisThread;
 import com.vaadin.demo.dashboard.pbthread.DownloadThread;
+import com.vaadin.demo.dashboard.pbthread.ToolExecutionThread;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -42,16 +33,19 @@ public class AnalysisWindow extends Window {
 		VerticalLayout l = new VerticalLayout();
 		l.setSpacing(true);
 		//l.setHeight(null);
-		l.setWidth("35em");
-
-
+		l.setWidth("55em");
+		
+		//l.setSizeFull();
+		
+		
 		setCaption("Analysis");
 		setContent(l);
 		center();
 		setCloseShortcut(KeyCode.ESCAPE, null);
 		setResizable(false);
-		setScrollTop(10);
-		setScrollLeft(10);
+		setScrollTop(5);
+		setScrollLeft(5);
+		setHeight(null);
 		setClosable(false);
 
 		addStyleName("no-vertical-drag-hints");
@@ -61,12 +55,14 @@ public class AnalysisWindow extends Window {
 		details.setSizeFull();
 		details.setSpacing(true);
 		details.setMargin(true);
+		
 		l.addComponent(details);
 
 		FormLayout fields = new FormLayout();
 		fields.setSizeFull();
 		fields.setSpacing(true);
 		fields.setMargin(true);
+		
 		details.addComponent(fields);
 
 		HorizontalLayout downloadhl = new HorizontalLayout();
@@ -75,7 +71,6 @@ public class AnalysisWindow extends Window {
 		downloadhl.setSizeFull();
 		downloadhl.setMargin(true);
 		fields.addComponent(downloadhl);
-
 
 		final ProgressBar indicator = new ProgressBar(new Float(0.0));
 		indicator.setVisible(false);
@@ -88,6 +83,7 @@ public class AnalysisWindow extends Window {
 		downloadhl.addComponent(indicator);
 
 		final Tree tree = new Tree("Poms available");
+		tree.setSizeFull();
 		tree.setVisible(false);
 		//aggiungo tree
 		fields.addComponent(tree);
@@ -99,8 +95,27 @@ public class AnalysisWindow extends Window {
 		mavenIndicator.setEnabled(false);
 		mavenIndicator.setSizeFull();
 		fields.addComponent(mavenIndicator);
-
-		//download button hve a listener
+		
+		HorizontalLayout toolhl = new HorizontalLayout();
+		toolhl.setSpacing(true);
+		toolhl.setCaption("Tools");
+		toolhl.setSizeFull();
+		toolhl.setMargin(true);
+		toolhl.addComponent(toolhl);
+		final Button toolsexec = new Button("Analysis");
+//		toolsexec.setCaption("Run Analysis");
+		toolsexec.setVisible(false);
+		toolsexec.setEnabled(false);
+		fields.addComponent(toolsexec);
+		final ProgressBar toolIndicator = new ProgressBar(new Float(0.0));
+//		toolIndicator.setCaption("Software tool Analysis running");
+		toolIndicator.setVisible(false);
+		toolIndicator.setEnabled(false);
+		toolIndicator.setSizeFull();
+		toolhl.addComponent(toolIndicator);
+		fields.addComponent(toolhl);
+		
+		//download button have a listener
 		download.addClickListener(new ClickListener(){
 			/**
 			 * 
@@ -111,7 +126,9 @@ public class AnalysisWindow extends Window {
 
 				if(checkout!=null){
 					//Notification.show("Not implemented in this demo, selezionato:\n"+s);
-					final DownloadThread t = new DownloadThread(indicator, download,mavenIndicator,r, checkout, tree,analysisIndicator);
+					final DownloadThread t = new DownloadThread(
+							indicator,download,mavenIndicator,r,checkout,
+							tree, analysisIndicator,toolsexec, toolIndicator);
 					t.start();
 					UI.getCurrent().setPollInterval(500);
 					indicator.setEnabled(true);
@@ -122,9 +139,26 @@ public class AnalysisWindow extends Window {
 				}
 			}
 		});
-//		if(mavenIndicator.getCaption().endsWith("true")){
-//			
-//		}
+
+		
+		toolsexec.addClickListener(new ClickListener(){
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -5680161680249552116L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final ToolExecutionThread t = new ToolExecutionThread(analysisIndicator,toolsexec);
+				t.start();
+				UI.getCurrent().setPollInterval(500);
+				analysisIndicator.setEnabled(true);
+				analysisIndicator.setVisible(true);
+				toolsexec.setEnabled(false);
+			}
+			
+		}) ;
 
 		HorizontalLayout footer = new HorizontalLayout();
 		footer.addStyleName("footer");

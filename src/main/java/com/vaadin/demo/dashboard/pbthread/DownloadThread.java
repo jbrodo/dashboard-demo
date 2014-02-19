@@ -4,30 +4,26 @@ import it.unimib.disco.essere.analyzer.build.maven.util.ArtifactValidator;
 import it.unimib.disco.essere.analyzer.build.maven.util.MavenPathRetrieve;
 import it.unimib.disco.essere.serial.searching.Repository;
 
-import com.vaadin.demo.dashboard.DashboardUI;
 import com.vaadin.demo.dashboard.data.DataProvider;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Notification.Type;
 
 public class DownloadThread extends Thread{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8928749412639224868L;
+	
 
 	// Volatile because read in another thread in access()
 	volatile double current = 0.0;
@@ -40,6 +36,8 @@ public class DownloadThread extends Thread{
 	final String _checkout ;
 	final Tree _tree;
 	final ProgressBar _analysisIndicator;
+	final ProgressBar _toolIndicator;
+	final Button _toolsexec;
 	Boolean _ready = new Boolean(false);
 
 
@@ -51,7 +49,9 @@ public class DownloadThread extends Thread{
 			final Repository r,
 			final String checkout,
 			final Tree tree,
-			final ProgressBar analysisIndicator){
+			final ProgressBar analysisIndicator,
+			final Button toolsexec,
+			final ProgressBar toolIndicator){
 		_downloadIndicator=downloadIndicator;
 		_downloadButton=downloadButton;
 		_r=r;
@@ -59,6 +59,8 @@ public class DownloadThread extends Thread{
 		_tree = tree;
 		_mavenIndicator = mavenIndicator;
 		_analysisIndicator = analysisIndicator;
+		_toolIndicator=toolIndicator;
+		_toolsexec = toolsexec;
 		//_mavenLabel = mavenLabel;
 	}
 
@@ -203,7 +205,7 @@ public class DownloadThread extends Thread{
 								public void buttonClick(ClickEvent event) {
 									//setto la barra di maven attive
 									
-									final MavenBuildThread t = new MavenBuildThread(_mavenIndicator, artifact,_analysisIndicator);
+									final MavenBuildThread t = new MavenBuildThread(_mavenIndicator, artifact,_analysisIndicator,_toolsexec,_toolIndicator);
 									t.start();
 									UI.getCurrent().setPollInterval(500);
 									_mavenIndicator.setVisible(true);

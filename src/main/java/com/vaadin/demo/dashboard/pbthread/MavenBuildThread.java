@@ -15,10 +15,19 @@ public class MavenBuildThread extends Thread {
 	final String _artifact;
 	Boolean _done = new Boolean(true); 
 	final ProgressBar _analysisIndicator;
-	public MavenBuildThread(final ProgressBar indicator, final String artifact, final ProgressBar analysisIndicator){
+	final ProgressBar _toolIndicator;
+	final Button _toolsexec;
+	public MavenBuildThread(
+			final ProgressBar indicator,
+			final String artifact,
+			final ProgressBar analysisIndicator,
+			final Button toolsexec,
+			final ProgressBar toolIndicator){
 		_indicator=indicator;
 		_artifact=artifact;
 		_analysisIndicator=analysisIndicator;
+		_toolIndicator=toolIndicator;
+		_toolsexec=toolsexec;
 	}
 
 	@Override
@@ -70,6 +79,9 @@ public class MavenBuildThread extends Thread {
 				// Stop polling
 				UI.getCurrent().setPollInterval(-1);
 				if(_done){
+					_toolsexec.setEnabled(true);
+					_toolsexec.setVisible(true);
+					
 					Notification.show("Maven artifact building ("+_artifact+") is done","The maven projec is builded",Type.TRAY_NOTIFICATION);
 				}else{
 					Notification.show("Maven artifact building ("+_artifact+") is NOT done","The maven projec is not builded",Type.TRAY_NOTIFICATION);
