@@ -4,6 +4,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Notification.Type;
 
 public class AnalysisThread extends Thread {
 	// Volatile because read in another thread in access()
@@ -54,7 +55,7 @@ public class AnalysisThread extends Thread {
                 UI.getCurrent().setPollInterval(-1);
                 
                 _button.setEnabled(true);
-                Notification.show("Terminato");
+                //Notification.show("Terminated analysis","This is only a draft mode, nothing happens.",Type.TRAY_NOTIFICATION);
             }
         });
     }

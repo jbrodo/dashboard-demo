@@ -115,11 +115,11 @@ public class ProjectWindow extends Window {
 				String s =(String)checkout.getConvertedValue();
 				if(s!=null){
 					//Notification.show("Not implemented in this demo, selezionato:\n"+s);
-					Window w = new AnalysisWindow(r,s);
+					Window w = new AnalysisWindow(r,s,indicator);
 					UI.getCurrent().addWindow(w);
 					w.focus();
-					final AnalysisThread t = new AnalysisThread(indicator, analyse);
-					t.start();
+//					final AnalysisThread t = new AnalysisThread(indicator, analyse);
+//					t.start();
 					UI.getCurrent().setPollInterval(500);
 					indicator.setEnabled(true);
 					indicator.setVisible(true);

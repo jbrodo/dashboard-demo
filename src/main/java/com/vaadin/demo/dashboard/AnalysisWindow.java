@@ -38,13 +38,13 @@ public class AnalysisWindow extends Window {
 	private static final long serialVersionUID = 5229945610717075518L;
 	Label synopsis = new Label();
 
-	public AnalysisWindow(final Repository r, final String checkout) {
+	public AnalysisWindow(final Repository r, final String checkout, final ProgressBar analysisIndicator) {
 		VerticalLayout l = new VerticalLayout();
 		l.setSpacing(true);
 		//l.setHeight(null);
 		l.setWidth("35em");
-		
-		
+
+
 		setCaption("Analysis");
 		setContent(l);
 		center();
@@ -56,20 +56,51 @@ public class AnalysisWindow extends Window {
 
 		addStyleName("no-vertical-drag-hints");
 		addStyleName("no-horizontal-drag-hints");
- 
-		
+
+		HorizontalLayout details = new HorizontalLayout();
+		details.setSizeFull();
+		details.setSpacing(true);
+		details.setMargin(true);
+		l.addComponent(details);
+
+		FormLayout fields = new FormLayout();
+		fields.setSizeFull();
+		fields.setSpacing(true);
+		fields.setMargin(true);
+		details.addComponent(fields);
+
 		HorizontalLayout downloadhl = new HorizontalLayout();
 		downloadhl.setSpacing(true);
+		downloadhl.setCaption("Download");
 		downloadhl.setSizeFull();
 		downloadhl.setMargin(true);
+		fields.addComponent(downloadhl);
+
+
 		final ProgressBar indicator = new ProgressBar(new Float(0.0));
 		indicator.setVisible(false);
 		indicator.setEnabled(false);
 		indicator.setSizeFull();
-		
+
 		final Button download = new Button("Start download");
 		download.addStyleName("default");
-		final Tree tree = new Tree("Poms available");		
+		downloadhl.addComponent(download);
+		downloadhl.addComponent(indicator);
+
+		final Tree tree = new Tree("Poms available");
+		tree.setVisible(false);
+		//aggiungo tree
+		fields.addComponent(tree);
+
+		//aggiungo maven indicator
+		final ProgressBar mavenIndicator = new ProgressBar(new Float(0.0));
+		mavenIndicator.setCaption("Maven building progress");
+		mavenIndicator.setVisible(false);
+		mavenIndicator.setEnabled(false);
+		mavenIndicator.setSizeFull();
+		fields.addComponent(mavenIndicator);
+
+		//download button hve a listener
 		download.addClickListener(new ClickListener(){
 			/**
 			 * 
@@ -77,36 +108,24 @@ public class AnalysisWindow extends Window {
 			private static final long serialVersionUID = -3883305257845654869L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-				
+
 				if(checkout!=null){
 					//Notification.show("Not implemented in this demo, selezionato:\n"+s);
-					final DownloadThread t = new DownloadThread(indicator, download,r, checkout, tree);
+					final DownloadThread t = new DownloadThread(indicator, download,mavenIndicator,r, checkout, tree,analysisIndicator);
 					t.start();
 					UI.getCurrent().setPollInterval(500);
 					indicator.setEnabled(true);
 					indicator.setVisible(true);
 					download.setEnabled(false);
-					tree.setVisible(false);
-					
 				}else{
 					Notification.show("Questo non dovrebbe mai essere visualizzato, perché il checkout è stato passato \"NULL\"");
 				}
 			}
 		});
-		downloadhl.addComponent(download);
-		downloadhl.addComponent(indicator);
-		l.addComponent(downloadhl);
-		
-		HorizontalLayout details = new HorizontalLayout();
-		details.setSpacing(true);
-		details.setMargin(true);
-		l.addComponent(details);
-		
-		
-		//aggiungo tree
-		details.addComponent(tree);
-		
-		
+//		if(mavenIndicator.getCaption().endsWith("true")){
+//			
+//		}
+
 		HorizontalLayout footer = new HorizontalLayout();
 		footer.addStyleName("footer");
 		footer.setSizeFull();//Width("100%");

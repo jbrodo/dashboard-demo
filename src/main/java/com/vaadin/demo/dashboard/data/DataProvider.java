@@ -13,6 +13,7 @@ package com.vaadin.demo.dashboard.data;
 import it.unimib.disco.essere.analysis.download.GitDownloadRepository;
 import it.unimib.disco.essere.analysis.download.RepositoryUrlNotWellFormed;
 import it.unimib.disco.essere.analysis.download.SVNDownloadRepository;
+import it.unimib.disco.essere.analysis.maven.SandBox;
 import it.unimib.disco.essere.analyzer.build.maven.util.MavenPathRetrieve;
 import it.unimib.disco.essere.crawler.type.RepositoryProtocol;
 import it.unimib.disco.essere.serial.readindex.RepositoryReadIndex;
@@ -187,6 +188,29 @@ public class DataProvider implements Serializable{
 		return false;
 	}
 
+	public static boolean doMavenBuild(final String artifact){
+		if(artifact!=null){
+			SandBox s = new SandBox(_directoryDownload.toFile());
+			s.runMaven(s._m.getArtifact(artifact));
+			if(s.isMavenBuildSuccess()){
+				try {
+					s.copyAllDependencies();
+					s.copyAllSources();
+					return true;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+		
+	}
+	
 	/**
 	 * =========================================================================
 	 * Movies in theaters
