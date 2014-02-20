@@ -98,22 +98,23 @@ public class AnalysisWindow extends Window {
 		
 		HorizontalLayout toolhl = new HorizontalLayout();
 		toolhl.setSpacing(true);
-		toolhl.setCaption("Tools");
+		//toolhl.setCaption("Tools");
 		toolhl.setSizeFull();
 		toolhl.setMargin(true);
-		toolhl.addComponent(toolhl);
+		fields.addComponent(toolhl);
+		
 		final Button toolsexec = new Button("Analysis");
 //		toolsexec.setCaption("Run Analysis");
 		toolsexec.setVisible(false);
 		toolsexec.setEnabled(false);
-		fields.addComponent(toolsexec);
+		toolhl.addComponent(toolsexec);
 		final ProgressBar toolIndicator = new ProgressBar(new Float(0.0));
 //		toolIndicator.setCaption("Software tool Analysis running");
 		toolIndicator.setVisible(false);
 		toolIndicator.setEnabled(false);
 		toolIndicator.setSizeFull();
 		toolhl.addComponent(toolIndicator);
-		fields.addComponent(toolhl);
+		
 		
 		//download button have a listener
 		download.addClickListener(new ClickListener(){
