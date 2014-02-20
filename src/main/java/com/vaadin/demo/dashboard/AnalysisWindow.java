@@ -29,7 +29,7 @@ public class AnalysisWindow extends Window {
 	private static final long serialVersionUID = 5229945610717075518L;
 	Label synopsis = new Label();
 
-	public AnalysisWindow(final Repository r, final String checkout, final ProgressBar analysisIndicator) {
+	public AnalysisWindow(final Repository r, final String checkout, final ProgressBar analysisIndicator, final Button analyse) {
 		VerticalLayout l = new VerticalLayout();
 		l.setSpacing(true);
 		//l.setHeight(null);
@@ -151,11 +151,11 @@ public class AnalysisWindow extends Window {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				final ToolExecutionThread t = new ToolExecutionThread(analysisIndicator,toolsexec);
+				final ToolExecutionThread t = new ToolExecutionThread(analysisIndicator,toolsexec,toolIndicator,analyse);
 				t.start();
 				UI.getCurrent().setPollInterval(500);
-				analysisIndicator.setEnabled(true);
-				analysisIndicator.setVisible(true);
+				toolIndicator.setEnabled(true);
+				toolIndicator.setVisible(true);
 				toolsexec.setEnabled(false);
 			}
 			

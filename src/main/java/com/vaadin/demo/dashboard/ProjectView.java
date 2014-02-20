@@ -42,6 +42,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.ColumnGenerator;
@@ -57,6 +59,8 @@ public class ProjectView extends VerticalLayout implements View {
 	 */
 	private static final long serialVersionUID = -5151568825013214088L;
 
+	TabSheet tab;
+	
 	Table t;
 
 	Object editableId = null;
@@ -70,7 +74,7 @@ public class ProjectView extends VerticalLayout implements View {
 
 		setSizeFull();
 		addStyleName("project");
-
+		
 		t = new Table() {
 			/**
 			 * 
@@ -197,8 +201,14 @@ public class ProjectView extends VerticalLayout implements View {
 		vl.addComponent(indicator);
 		vl.setComponentAlignment(indicator,Alignment.MIDDLE_RIGHT);
 		addComponent(vl);
-		addComponent(t);
-		setExpandRatio(t, 1);
+		
+		tab = new TabSheet();
+		tab.setSizeFull();
+		tab.addTab(t,"Tabella");
+		tab.getTab(t).setClosable(false);
+		
+		addComponent(tab);
+		setExpandRatio(tab, 1);
 
 		t.addActionHandler(new Handler() {
 

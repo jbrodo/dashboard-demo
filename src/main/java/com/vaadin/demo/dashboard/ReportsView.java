@@ -70,7 +70,12 @@ import com.vaadin.ui.Window;
 
 public class ReportsView extends HorizontalLayout implements View {
 
-    private TabSheet editors;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4639538875683895892L;
+
+	private TabSheet editors;
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -87,7 +92,12 @@ public class ReportsView extends HorizontalLayout implements View {
         editors.addStyleName("editors");
 
         editors.setCloseHandler(new CloseHandler() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -2538243183317728523L;
+
+			@Override
             public void onTabClose(TabSheet tabsheet, final Component tabContent) {
                 VerticalLayout l = new VerticalLayout();
                 l.setWidth("400px");
@@ -112,7 +122,12 @@ public class ReportsView extends HorizontalLayout implements View {
                 Button discard = new Button("Don't Save");
                 discard.addStyleName("small");
                 discard.addClickListener(new ClickListener() {
-                    @Override
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = 5911892202356699213L;
+
+					@Override
                     public void buttonClick(ClickEvent event) {
                         editors.removeComponent(tabContent);
                         draftCount--;
@@ -128,7 +143,12 @@ public class ReportsView extends HorizontalLayout implements View {
                 Button cancel = new Button("Cancel");
                 cancel.addStyleName("small");
                 cancel.addClickListener(new ClickListener() {
-                    @Override
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = 3876696837979809240L;
+
+					@Override
                     public void buttonClick(ClickEvent event) {
                         alert.close();
                     }
@@ -140,7 +160,12 @@ public class ReportsView extends HorizontalLayout implements View {
                 ok.addStyleName("small");
                 ok.addStyleName("wide");
                 ok.addClickListener(new ClickListener() {
-                    @Override
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = 4675266438672511217L;
+
+					@Override
                     public void buttonClick(ClickEvent event) {
                         editors.removeComponent(tabContent);
                         draftCount--;
@@ -159,7 +184,12 @@ public class ReportsView extends HorizontalLayout implements View {
 
                 alert.addShortcutListener(new ShortcutListener("Cancel",
                         KeyCode.ESCAPE, null) {
-                    @Override
+                    /**
+							 * 
+							 */
+							private static final long serialVersionUID = -7627094604998360136L;
+
+					@Override
                     public void handleAction(Object sender, Object target) {
                         alert.close();
                     }
@@ -210,14 +240,24 @@ public class ReportsView extends HorizontalLayout implements View {
         delete.setPrimaryStyleName("delete-button");
         draftThumb.addComponent(delete);
         delete.addClickListener(new ClickListener() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -2256908702478105088L;
+
+			@Override
             public void buttonClick(ClickEvent event) {
                 Notification.show("Not implemented in this demo");
             }
         });
 
         draftThumb.addLayoutClickListener(new LayoutClickListener() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 7721662649367033656L;
+
+			@Override
             public void layoutClick(LayoutClickEvent event) {
                 if (event.getButton() == MouseButton.LEFT
                         && event.getChildComponent() != delete) {
@@ -239,7 +279,12 @@ public class ReportsView extends HorizontalLayout implements View {
         createBox.setComponentAlignment(create, Alignment.MIDDLE_CENTER);
         drafts.addComponent(createBox);
         create.addClickListener(new ClickListener() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -5913769189462021275L;
+
+			@Override
             public void buttonClick(ClickEvent event) {
                 autoCreate(0, null, null);
             }
@@ -385,7 +430,11 @@ public class ReportsView extends HorizontalLayout implements View {
     }
 
     private class SortableLayout extends CustomComponent {
-        private VerticalLayout layout;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 7227768997186442564L;
+		private VerticalLayout layout;
         private final DropHandler dropHandler;
 
         public SortableLayout(String caption, int which, Transferable items,
@@ -400,7 +449,12 @@ public class ReportsView extends HorizontalLayout implements View {
             title.setValue(caption);
 
             title.addTextChangeListener(new TextChangeListener() {
-                @Override
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 2540110354467637894L;
+
+				@Override
                 public void textChange(TextChangeEvent event) {
                     Tab tab = editors.getTab(SortableLayout.this.getParent());
                     String t = event.getText();
@@ -457,7 +511,12 @@ public class ReportsView extends HorizontalLayout implements View {
                 placeholder.addStyleName("placeholder");
                 placeholder.setDropHandler(new DropHandler() {
 
-                    @Override
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = -2562674451781823385L;
+
+					@Override
                     public AcceptCriterion getAcceptCriterion() {
                         // return new SourceIsTarget.get());
                         return AcceptAll.get();
@@ -503,7 +562,11 @@ public class ReportsView extends HorizontalLayout implements View {
 
     private static class WrappedComponent extends DragAndDropWrapper {
 
-        private final DropHandler dropHandler;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 6529305327994299622L;
+		private final DropHandler dropHandler;
 
         public WrappedComponent(Component content, DropHandler dropHandler) {
             super(content);
@@ -544,7 +607,12 @@ public class ReportsView extends HorizontalLayout implements View {
                 save.addStyleName("default");
                 save.addStyleName("small");
                 save.addClickListener(new ClickListener() {
-                    @Override
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = -4752290584210247626L;
+
+					@Override
                     public void buttonClick(ClickEvent event) {
                         if (save.getCaption().equals("Save")) {
                             l.removeStyleName("edit");
@@ -574,7 +642,12 @@ public class ReportsView extends HorizontalLayout implements View {
                 return l;
             } else if (caption.equals("grid")) {
                 Table t = new Table() {
-                    @Override
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = -274208570325295607L;
+
+					@Override
                     protected String formatPropertyValue(Object rowId,
                             Object colId, Property<?> property) {
                         if (colId.equals("Revenue")) {
@@ -613,7 +686,11 @@ public class ReportsView extends HorizontalLayout implements View {
 
     private class ReorderLayoutDropHandler implements DropHandler {
 
-        private AbstractOrderedLayout layout;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -772044898336023724L;
+		private AbstractOrderedLayout layout;
 
         public ReorderLayoutDropHandler(AbstractOrderedLayout layout) {
             this.layout = layout;

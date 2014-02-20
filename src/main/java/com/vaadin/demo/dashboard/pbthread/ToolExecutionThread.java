@@ -2,6 +2,8 @@ package com.vaadin.demo.dashboard.pbthread;
 
 import com.vaadin.demo.dashboard.data.DataProvider;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.UI;
 
@@ -9,12 +11,16 @@ public class ToolExecutionThread extends Thread {
 	// Volatile because read in another thread in access()
 	volatile double current = 0.0;
 
-	ProgressBar _indicator = null;
-	Button _button = null;
+	final ProgressBar _analysisIndicator;
+	final ProgressBar _toolIndicator;
+	final Button _button;
+	final Button _analyse;
 	boolean _done = false;
-	public ToolExecutionThread(ProgressBar indicator, Button button){
-		_indicator=indicator;
+	public ToolExecutionThread(final ProgressBar analysiIndicator, final Button button, final ProgressBar toolIndicator, final Button analyse){
+		_analysisIndicator=analysiIndicator;
 		_button=button;
+		_toolIndicator=toolIndicator;
+		_analyse=analyse;
 	}
 
 	@Override
@@ -25,9 +31,15 @@ public class ToolExecutionThread extends Thread {
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                    _indicator.setValue(new Float(current));
+                    _toolIndicator.setValue(new Float(current));
                 }
             });
+            UI.getCurrent().access(new Runnable() {
+    			@Override
+    			public void run() {
+    				_analysisIndicator.setValue(new Float(_analysisIndicator.getValue()+0.16));
+    			}
+    		});
             // Do some "heavy work"
             _done=DataProvider.doRunTool();
             current = 1.0;
@@ -35,9 +47,16 @@ public class ToolExecutionThread extends Thread {
             UI.getCurrent().access(new Runnable() {
                 @Override
                 public void run() {
-                    _indicator.setValue(new Float(current));
+                    _toolIndicator.setValue(new Float(current));
                 }
             });
+            UI.getCurrent().access(new Runnable() {
+    			@Override
+    			public void run() {
+    				float i = 1.0f - _analysisIndicator.getValue();
+    				_analysisIndicator.setValue(new Float(_analysisIndicator.getValue()+i));
+    			}
+    		});
         
        
 
@@ -46,13 +65,14 @@ public class ToolExecutionThread extends Thread {
             @Override
             public void run() {
                 // Restore the state to initial
-                _indicator.setValue(new Float(0.0));
-                _indicator.setEnabled(false);
+//                _toolIndicator.setValue(new Float(0.0));
+//                _toolIndicator.setEnabled(false);
                 // Stop polling
                 UI.getCurrent().setPollInterval(-1);
                 
                 _button.setEnabled(true);
-                //Notification.show("Terminated analysis","This is only a draft mode, nothing happens.",Type.TRAY_NOTIFICATION);
+                _analyse.setEnabled(true);
+                Notification.show("Terminated analysis","This is only a draft mode, DFMC4J have done is job.",Type.TRAY_NOTIFICATION);
             }
         });
     }

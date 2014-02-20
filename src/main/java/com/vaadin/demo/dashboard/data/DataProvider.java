@@ -16,6 +16,8 @@ import it.unimib.disco.essere.analysis.download.SVNDownloadRepository;
 import it.unimib.disco.essere.analysis.maven.SandBox;
 import it.unimib.disco.essere.analyzer.build.maven.util.MavenPathRetrieve;
 import it.unimib.disco.essere.crawler.type.RepositoryProtocol;
+import it.unimib.disco.essere.repofinderUI.tool.dfmc4j.DFMC4JExec;
+import it.unimib.disco.essere.repofinderUI.tool.exec.ToolExecutor;
 import it.unimib.disco.essere.serial.readindex.RepositoryReadIndex;
 import it.unimib.disco.essere.serial.searching.Repository;
 import it.unimib.disco.essere.serial.searching.RepositoryDTO;
@@ -67,7 +69,8 @@ public class DataProvider implements Serializable{
 	private static final long serialVersionUID = -4408864981761274870L;
 	public static Random rand = new Random();
 	public static Path _directory = Paths.get(File.separator,"home","r.roveda","workspace","tesi","repoFinderUI","index-searchengine","index");
-	public static Path _directoryDownload = Paths.get(File.separator,"home","r.roveda","sandboxdowload");
+	public static Path _directoryDownload = Paths.get(File.separator,"home","r.roveda","sandboxdownload");
+	public static Path _directorySandobox = Paths.get(File.separator,"home","r.roveda","sandbox");
 	/**
 	 * Initialize the data for this application.
 	 */
@@ -212,8 +215,8 @@ public class DataProvider implements Serializable{
 	}
 	
 	public static boolean doRunTool() {
-		// TODO Auto-generated method stub
-		return false;
+		ToolExecutor t = new DFMC4JExec();
+		return t.exec(_directorySandobox, null);
 	}
 	
 	/**
