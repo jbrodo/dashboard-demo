@@ -204,7 +204,7 @@ public class ProjectView extends VerticalLayout implements View {
 		
 		tab = new TabSheet();
 		tab.setSizeFull();
-		tab.addTab(t,"Tabella");
+		tab.addTab(t,"Search Repository");
 		tab.getTab(t).setClosable(false);
 		
 		addComponent(tab);
@@ -244,6 +244,32 @@ public class ProjectView extends VerticalLayout implements View {
 				return new Action[] { details, report, discard };
 			}
 		});
+		
+		
+		//New table from best asgardian people
+		Table resultTable = new Table() {
+			
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -6373633195598973687L;
+
+			@Override
+			protected String formatPropertyValue(Object rowId, Object colId,
+					Property<?> property) {
+				if (colId.equals("Score")) {
+					if (property != null && property.getValue() != null) {
+						String ret = new DecimalFormat("#####.##").format(property
+								.getValue());
+						return ret;
+					} else {
+						return "";
+					}
+				}
+				return super.formatPropertyValue(rowId, colId, property);
+			}
+		};
 	}
 
 	public void doQuery(String query){
