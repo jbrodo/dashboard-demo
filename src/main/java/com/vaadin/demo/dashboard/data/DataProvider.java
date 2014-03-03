@@ -18,6 +18,8 @@ import it.unimib.disco.essere.analyzer.build.maven.util.MavenPathRetrieve;
 import it.unimib.disco.essere.crawler.type.RepositoryProtocol;
 import it.unimib.disco.essere.repofinderUI.tool.dfmc4j.DFMC4JExec;
 import it.unimib.disco.essere.repofinderUI.tool.exec.ToolExecutor;
+import it.unimib.disco.essere.serial.driver.JunkDB;
+import it.unimib.disco.essere.serial.indexing.RepositoryIndex;
 import it.unimib.disco.essere.serial.readindex.RepositoryReadIndex;
 import it.unimib.disco.essere.serial.searching.Repository;
 import it.unimib.disco.essere.serial.searching.RepositoryDTO;
@@ -50,6 +52,8 @@ import java.util.Random;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
@@ -81,6 +85,10 @@ public class DataProvider implements Serializable{
 		generateTransactionsData();
 	}
 
+	public static Directory openDirectoryIndexing() throws IOException{
+		return FSDirectory.open(_directory.toFile());
+	}
+	
 	private ProjectContainer p ;
 	private static List<Repository> projects = new ArrayList<Repository>();
 	public void loadProjectData() {

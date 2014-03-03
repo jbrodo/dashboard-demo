@@ -11,21 +11,12 @@
 package com.vaadin.demo.dashboard;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Set;
 
-import javax.management.Query;
-
-import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.demo.dashboard.data.DataProvider;
 import com.vaadin.demo.dashboard.data.ProjectContainer;
-import com.vaadin.demo.dashboard.data.TransactionsContainer;
-import com.vaadin.demo.dashboard.pbthread.AnalysisThread;
+import com.vaadin.demo.dashboard.pbthread.IndexingThread;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -43,10 +34,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.Align;
-import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -181,10 +170,10 @@ public class ProjectView extends VerticalLayout implements View {
 			private static final long serialVersionUID = -6479091296826030739L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-					Notification.show("Not implemented in this demo");
-					final AnalysisThread t = new AnalysisThread(indicator, indexbutton);
+//					Notification.show("Not implemented in this demo");
+					final IndexingThread t = new IndexingThread(indicator, indexbutton);
 					t.start();
-					Notification.show("Partito");
+//					Notification.show("Partito");
 					UI.getCurrent().setPollInterval(500);
 					indicator.setEnabled(true);
 					indicator.setVisible(true);
