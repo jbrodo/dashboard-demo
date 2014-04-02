@@ -11,6 +11,7 @@
 package com.vaadin.demo.dashboard.data;
 
 import it.unimib.disco.essere.analysis.download.GitDownloadRepository;
+import it.unimib.disco.essere.analysis.download.HGDownloadRepository;
 import it.unimib.disco.essere.analysis.download.RepositoryUrlNotWellFormed;
 import it.unimib.disco.essere.analysis.download.SVNDownloadRepository;
 import it.unimib.disco.essere.analysis.maven.SandBox;
@@ -18,8 +19,6 @@ import it.unimib.disco.essere.analyzer.build.maven.util.MavenPathRetrieve;
 import it.unimib.disco.essere.crawler.type.RepositoryProtocol;
 import it.unimib.disco.essere.repofinderUI.tool.dfmc4j.DFMC4JExec;
 import it.unimib.disco.essere.repofinderUI.tool.exec.ToolExecutor;
-import it.unimib.disco.essere.serial.driver.JunkDB;
-import it.unimib.disco.essere.serial.indexing.RepositoryIndex;
 import it.unimib.disco.essere.serial.readindex.RepositoryReadIndex;
 import it.unimib.disco.essere.serial.searching.Repository;
 import it.unimib.disco.essere.serial.searching.RepositoryDTO;
@@ -169,6 +168,18 @@ public class DataProvider implements Serializable{
 					tipo.equals(RepositoryProtocol.GIT_HTML)){
 				try {
 					GitDownloadRepository g =new GitDownloadRepository(_directoryDownload.toString(),checkout);
+					g.downloadRepository();
+					_m=new MavenPathRetrieve(_directoryDownload.toFile());
+					return true;
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (RepositoryUrlNotWellFormed e) {
+					e.printStackTrace();
+				}
+			}
+			if(tipo.equals(RepositoryProtocol.HG)){
+				try {
+					HGDownloadRepository g =new HGDownloadRepository(_directoryDownload.toString(),checkout);
 					g.downloadRepository();
 					_m=new MavenPathRetrieve(_directoryDownload.toFile());
 					return true;

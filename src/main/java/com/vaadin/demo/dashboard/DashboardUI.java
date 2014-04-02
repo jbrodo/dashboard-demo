@@ -55,8 +55,10 @@ public class DashboardUI extends UI {
 
 
 
-	private static final String[] MENU_DASHBOARD_ITEMS = new String[] { "dashboard", "sales",
-		"transactions", "reports", "schedule" ,"project"};
+	private static final String[] MENU_DASHBOARD_ITEMS = new String[] { 
+		"dashboard",
+//		"sales", "transactions", "reports", "schedule" ,
+		"project"};
 
 	DataProvider dataProvider = new DataProvider();
 
@@ -73,10 +75,10 @@ public class DashboardUI extends UI {
 	HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
 		{
 			put("/dashboard", DashboardView.class);
-			put("/sales", SalesView.class);
-			put("/transactions", TransactionsView.class);
-			put("/reports", ReportsView.class);
-			put("/schedule", ScheduleView.class);
+			//put("/sales", SalesView.class);
+			//put("/transactions", TransactionsView.class);
+			//put("/reports", ReportsView.class);
+			//put("/schedule", ScheduleView.class);
 			put("/project",ProjectView.class);
 		}
 	};
@@ -145,7 +147,7 @@ public class DashboardUI extends UI {
 		labels.addComponent(welcome);
 		labels.setComponentAlignment(welcome, Alignment.MIDDLE_LEFT);
 
-		Label title = new Label("QuickTickets Dashboard");
+		Label title = new Label("RepoFinder Dashboard");
 		title.setSizeUndefined();
 		title.addStyleName("h2");
 		title.addStyleName("light");
@@ -366,7 +368,8 @@ public class DashboardUI extends UI {
 
 		viewNameToMenuButton.get("/dashboard").setHtmlContentAllowed(true);
 		viewNameToMenuButton.get("/dashboard").setCaption(
-				"Dashboard<span class=\"badge\">2</span>");
+				//"Dashboard<span class=\"badge\">2</span>");
+				"Dashboard");
 
 		String f = Page.getCurrent().getUriFragment();
 		if (f != null && f.startsWith("!")) {

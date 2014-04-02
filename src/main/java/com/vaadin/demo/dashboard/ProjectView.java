@@ -158,6 +158,7 @@ public class ProjectView extends VerticalLayout implements View {
 		Label index = new Label("Index db");
 		index.addStyleName("h2");
 		index.setSizeUndefined();
+		index.setVisible(false);
 		toolbar.addComponent(index);
 		toolbar.setComponentAlignment(index, Alignment.MIDDLE_RIGHT);
 		
@@ -166,6 +167,7 @@ public class ProjectView extends VerticalLayout implements View {
 		indicator.setEnabled(false);
 		indicator.setSizeFull();
 		final Button indexbutton = new Button("Start indexing");
+		indexbutton.setVisible(false);
 		indexbutton.addClickListener(new ClickListener(){
 			private static final long serialVersionUID = -6479091296826030739L;
 			@Override
