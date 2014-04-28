@@ -46,8 +46,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -87,7 +90,7 @@ public class DataProvider implements Serializable{
 	public static Directory openDirectoryIndexing() throws IOException{
 		return FSDirectory.open(_directory.toFile());
 	}
-	
+
 	private ProjectContainer p ;
 	private static List<Repository> projects = new ArrayList<Repository>();
 	public void loadProjectData() {
@@ -141,6 +144,148 @@ public class DataProvider implements Serializable{
 			e.printStackTrace();
 		}
 		return p;
+	}
+
+	void next(int []m){
+		m[0]++;
+		for(int i=0;i<m.length;i++){
+			if(m[i]>1&&i<(m.length-1)){
+				m[i+1]++;
+				m[i]=0;
+			}
+		}
+	}
+
+	String getQuery(int []m,List<String>query){
+		String r="";
+		for(int i=0;i<m.length;i++){
+			if(m[i]==1){
+				r=String.format("%s %s", r,query.get(i));
+			}
+		}
+		return r;
+	}
+
+	int countOfOnes(int []m){
+		int j=0;
+		for(int i:m){
+			j+=i;
+		}
+		return j;
+	}
+
+	public ProjectContainer doQueryOR(List<String> query){
+		SearchEngine se = new SearchEngine(_directory.toString());
+		p=new ProjectContainer();
+		projects=new ArrayList<Repository>();
+		List<Repository> set = new ArrayList<Repository>();
+		
+		try {
+			int m[] = new int[query.size()];
+			for(int j=0;j<query.size();j++){
+				m[j]=0;
+			}			
+			while(countOfOnes(m)<m.length){
+				addScoreMiddleSearch(set, m, query, se);
+				next(m);
+			}
+			//ultima query
+			addScoreMiddleSearch(set, m, query, se);
+//			int n=0;
+//			for(Repository r :set){
+//				int k=0;
+//				for(Repository l :set){
+//					if(l.equals(r)){
+//						k++;
+//					}
+//				}
+//				System.out.println(String.format("%d\t%d/%d %s",k,n,set.size(),r.nome));
+//				n++;
+//			}
+			for(Repository r :set){
+				p.addProject(r);
+				
+				projects.add(r);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return p;
+		
+	}
+	private void addScoreMiddleSearch(List<Repository> set, int []m, List<String> query, SearchEngine se ) throws ParseException, IOException{
+		if(countOfOnes(m)>1){
+			RepositoryDTO repo =se.getResults(getQuery(m,query), defaultValues);
+			for(Repository r:repo.repositorys){
+				if(set.contains(r)){
+					for(Repository y:set){	
+						if(y.equals(r)){
+							y.score=y.score+r.score;
+							break;
+						}
+					}
+				}else{
+					set.add(r);
+				}
+			}
+		}
+	}
+	public ProjectContainer doQueryOROld(List<String> query){
+		SearchEngine se = new SearchEngine(_directory.toString());
+		p=new ProjectContainer();
+		projects=new ArrayList<Repository>();
+		Set<Repository> set = new HashSet<Repository>();
+		try {
+			int m[] = new int[query.size()];
+			for(int j=0;j<query.size();j++){
+				m[j]=0;
+			}			
+			while(countOfOnes(m)<m.length){
+				addScoreMiddleSearch(set, m, query, se);
+				next(m);
+			}
+			//ultima query
+			addScoreMiddleSearch(set, m, query, se);
+
+			for(Repository r :set){
+				p.addProject(r);
+				projects.add(r);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return p;
+	}
+	
+	private void addScoreMiddleSearch(Set<Repository> set, int []m, List<String> query, SearchEngine se ) throws ParseException, IOException{
+		Set<Repository> temp = new HashSet<Repository>();
+		//aggiungere al set progetti e sommare gli score se countofones è maggiore di 1
+		if(countOfOnes(m)>1){
+			RepositoryDTO repo =se.getResults(getQuery(m,query), defaultValues);
+			for(Repository r:repo.repositorys){
+				temp.add(r);
+			}
+			for(Repository r:temp){
+				if(set.contains(r)){
+					Iterator<Repository> iterator=set.iterator();
+					boolean modificato = false;
+					while(iterator.hasNext() && !modificato){
+						Repository y = iterator.next();
+						if(y.equals(r)){
+							y.score=y.score+r.score;
+							System.out.println(y.score);
+							modificato=true;
+						}
+					}
+				}else{
+					set.add(r);
+				}
+			}
+		}
 	}
 
 	public static Repository getProjectByName(String name) {
@@ -230,14 +375,14 @@ public class DataProvider implements Serializable{
 		}else{
 			return false;
 		}
-		
+
 	}
-	
+
 	public static boolean doRunTool() {
 		ToolExecutor t = new DFMC4JExec();
 		return t.exec(_directorySandobox, null);
 	}
-	
+
 	/**
 	 * =========================================================================
 	 * Movies in theaters
@@ -695,6 +840,6 @@ public class DataProvider implements Serializable{
 		return null;
 	}
 
-	
+
 
 }

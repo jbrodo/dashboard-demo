@@ -14,7 +14,9 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -132,6 +134,7 @@ public class ProjectWindow extends Window {
 		fields.addComponent(checkout);
 		
 		int columns = 3;
+//		int columns = 6;
 		
 		Label tag = new Label("");
 		tag.setCaption("Tags");
@@ -147,7 +150,7 @@ public class ProjectWindow extends Window {
 		}
 		System.out.println(righeint);
 		
-		GridLayout gl = new GridLayout(columns,righeint);
+		final GridLayout gl = new GridLayout(columns,righeint);
 		gl.setCaption("Tag");
 		Iterator<String> tags = r.getTags().iterator();
 		for(int righe = 0; tags.hasNext();righe++){
@@ -157,22 +160,24 @@ public class ProjectWindow extends Window {
 				if(caption.length()>11){
 					captiondot=caption.substring(0, 10)+"...";
 				}
-				Button b = new Button(captiondot);
-				b.setDescription(caption);
-				b.addStyleName("small");
-				gl.addComponent(b, colonne, righe);
-				b.addClickListener(new ClickListener() {
-					
-					/**
-					 * 
-					 */
-					private static final long serialVersionUID = -6383016597762565727L;
-
-					@Override
-					public void buttonClick(ClickEvent event) {
-						p.doQuery(event.getButton().getCaption());
-					}
-				});
+				CheckBox ckbox = new CheckBox(captiondot);
+				ckbox.setDescription(caption);
+				gl.addComponent(ckbox, colonne, righe);
+				//Button b = new Button(captiondot);
+				//b.setDescription(caption);
+				//b.addStyleName("small");
+//				gl.addComponent(b, colonne, righe);
+//				b.addClickListener(new ClickListener() {
+//					/**
+//					 * 
+//					 */
+//					private static final long serialVersionUID = -6383016597762565727L;
+//
+//					@Override
+//					public void buttonClick(ClickEvent event) {
+//						p.doQuery(event.getButton().getCaption());
+//					}
+//				});
 			}	
 		}
 		
@@ -180,7 +185,35 @@ public class ProjectWindow extends Window {
 			tag.setValue("No tag");
 			fields.addComponent(tag);
 		}else{
+			Button queryTags = new Button("Search Tags");
+			queryTags.addStyleName("small");
+			queryTags.addClickListener(new ClickListener(){
+				private static final long serialVersionUID = -6383016597762565727L;
+				@Override
+				public void buttonClick(ClickEvent event) {
+					Iterator<Component> components = gl.iterator();
+//					String query = new String();
+//					boolean first = true;
+//					while(components.hasNext()){
+//						CheckBox c = (CheckBox) components.next();
+//						boolean value = c.getValue();
+//						if(value){
+//							if(first){
+//								first = false;
+//								query = c.getDescription();
+//							}else{
+//								query = String.format("%s %s", query,c.getDescription());//description because the caption have the dots
+//							}
+//						}
+//					}
+//					p.doQuery(query);
+					p.doQueryOR(components);
+				}
+				
+			});
+//			gl.addComponent(queryTags);
 			fields.addComponent(gl);
+			fields.addComponent(queryTags);
 		}
 		
 		fields.addComponent(analyse);
